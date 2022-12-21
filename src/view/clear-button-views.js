@@ -13,19 +13,22 @@ const createClearButtonTemplate = (isDisabled) => (`
 `);
 
 export default class ClearButtonView {
+  #element = null;
+  #isDisabled = null;
+
   constructor(isDisabled) {
-    this.isDisabled = isDisabled;
+    this.#isDisabled = isDisabled;
   }
 
-  getTemplate() {
-    return createClearButtonTemplate(this.isDisabled);
+  get template() {
+    return createClearButtonTemplate(this.#isDisabled);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 }

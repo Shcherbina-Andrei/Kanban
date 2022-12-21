@@ -23,20 +23,22 @@ const createTaskBoardListTemplate = (type) => {
   `);};
 
 export default class TaskBoardList {
+  #type = null;
+  #element = null;
 
   constructor(type) {
-    this.type = type;
+    this.#type = type;
   }
 
-  getTemplate() {
-    return createTaskBoardListTemplate(this.type);
+  get template() {
+    return createTaskBoardListTemplate(this.#type);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 }
