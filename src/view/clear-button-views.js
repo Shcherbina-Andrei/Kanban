@@ -1,7 +1,7 @@
 import {createElement} from '../render';
 
-const createClearButtonTemplate = () => (`
-  <button class="taskboard__button button button--clear" type="button">
+const createClearButtonTemplate = (isDisabled) => (`
+  <button class="taskboard__button button button--clear" type="button" ${isDisabled ? 'disabled' : ''}>
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="15.5374" y="5.16638" width="1.83333" height="14.6667" transform="rotate(45 15.5374 5.16638)"
         fill="white" />
@@ -13,8 +13,12 @@ const createClearButtonTemplate = () => (`
 `);
 
 export default class ClearButtonView {
+  constructor(isDisabled) {
+    this.isDisabled = isDisabled;
+  }
+
   getTemplate() {
-    return createClearButtonTemplate();
+    return createClearButtonTemplate(this.isDisabled);
   }
 
   getElement() {

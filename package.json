@@ -10,10 +10,9 @@
         "not < 0.25%"
     ],
     "scripts": {
-      "lint": "eslint src/",
-      "build": "webpack --mode production",
-      "start": "webpack serve --mode development --open"
-
+        "lint": "eslint src/",
+        "build": "webpack --mode production",
+        "start": "webpack serve --mode development --open"
     },
     "devDependencies": {
         "@babel/core": "^7.20.5",
@@ -30,5 +29,8 @@
     },
     "engines": {
         "node": "16"
+    },
+    "dependencies": {
+        "nanoid": "^4.0.0"
     }
 }

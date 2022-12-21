@@ -13,12 +13,14 @@ export default class TaskBoardPresenter {
   basketGroupPresenter = new BasketGroupPresenter();
 
 
-  init = (container) => {
+  init = (container, tasksModel) => {
     this.container = container;
-    this.backlogGroupPresenter.init(this.taskBoardComponent.getElement());
-    this.processingGroupPresenter.init(this.taskBoardComponent.getElement());
-    this.doneGroupPresenter.init(this.taskBoardComponent.getElement());
-    this.basketGroupPresenter.init(this.taskBoardComponent.getElement());
+    this.tasksModel = tasksModel;
+
+    this.backlogGroupPresenter.init(this.taskBoardComponent.getElement(), this.tasksModel.getBacklogTasks());
+    this.processingGroupPresenter.init(this.taskBoardComponent.getElement(), this.tasksModel.getProcessingTasks());
+    this.doneGroupPresenter.init(this.taskBoardComponent.getElement(), this.tasksModel.getDoneTasks());
+    this.basketGroupPresenter.init(this.taskBoardComponent.getElement(), this.tasksModel.getBasketTasks());
     render(this.taskBoardComponent, this.container);
   };
 }
