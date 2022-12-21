@@ -21,26 +21,29 @@ const createTaskTemplate = (task) => {
   <div class="taskboard__item task ${taskClass}">
     <div class="task__body">
       <p class="task__view">${task.description}</p>
-      <input class="task__input" type="text" value=${task.description}>
+      <input class="task__input" type="text" value='${task.description}'>
     </div>
     <button class="task__edit" type="button" aria-label="Изменить"></button>
   </div>
 `);};
 
 export default class TaskView {
+  #task = null;
+  #element = null;
+
   constructor(task) {
-    this.task = task;
+    this.#task = task;
   }
 
-  getTemplate() {
-    return createTaskTemplate(this.task);
+  get template() {
+    return createTaskTemplate(this.#task);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 }
