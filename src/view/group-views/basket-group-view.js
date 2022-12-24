@@ -1,4 +1,4 @@
-import {createElement} from '../../render';
+import AbstractView from '../../framework/view/abstract-view';
 
 const createBasketGroupView = () => (`
   <article class="taskboard__group taskboard__group--basket">
@@ -6,19 +6,9 @@ const createBasketGroupView = () => (`
   </article>
 `);
 
-export default class BasketGroupView {
-  #element = null;
-
+export default class BasketGroupView extends AbstractView {
   get template() {
     return createBasketGroupView();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }
 

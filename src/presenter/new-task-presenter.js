@@ -1,13 +1,20 @@
 import NewTaskView from '../view/new-task-view';
-import {render} from '../render';
+import {render} from '../framework/render';
 
 export default class NewTaskPresenter {
   #container = null;
+  #newTaskComponent = null;
 
-  #newTaskComponent = new NewTaskView();
-
-  init = (container) => {
+  constructor(container) {
     this.#container = container;
+  }
+
+  init = () => {
+    this.#renderNewTaskPresenter();
+  };
+
+  #renderNewTaskPresenter = () => {
+    this.#newTaskComponent = new NewTaskView();
     render(this.#newTaskComponent, this.#container);
   };
 }

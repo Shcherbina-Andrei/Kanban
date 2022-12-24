@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 const createTaskBoardTemplate = () => (`
   <section class="taskboard">
@@ -6,18 +6,8 @@ const createTaskBoardTemplate = () => (`
   </section>
 `);
 
-export default class TaskBoardView {
-  #element = null;
-
+export default class TaskBoardView extends AbstractView {
   get template() {
     return createTaskBoardTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }
