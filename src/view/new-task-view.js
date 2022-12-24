@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 const createNewTaskTemplate = () => (`
     <section class="add-task">
@@ -20,18 +20,8 @@ const createNewTaskTemplate = () => (`
       </section>
   `);
 
-export default class NewTaskView {
-  #element = null;
-
+export default class NewTaskView extends AbstractStatefulView {
   get template() {
     return createNewTaskTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }

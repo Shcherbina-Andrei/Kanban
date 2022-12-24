@@ -1,5 +1,5 @@
-import {createElement} from '../render';
 import {TASK_STATUS} from '../const';
+import AbstractView from '../framework/view/abstract-view';
 
 const createTaskBoardListTemplate = (type) => {
   let taskboardListClass;
@@ -19,26 +19,18 @@ const createTaskBoardListTemplate = (type) => {
   }
 
   return (`
-  <div class="taskboard__list ${taskboardListClass}"></div>
+  <div class="taskboard__list ${taskboardListClass}" data-type=${type}></div>
   `);};
 
-export default class TaskBoardList {
+export default class TaskBoardList extends AbstractView {
   #type = null;
-  #element = null;
 
   constructor(type) {
+    super();
     this.#type = type;
   }
 
   get template() {
     return createTaskBoardListTemplate(this.#type);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }

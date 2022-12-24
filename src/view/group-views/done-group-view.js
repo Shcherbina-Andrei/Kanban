@@ -1,4 +1,4 @@
-import {createElement} from '../../render';
+import AbstractView from '../../framework/view/abstract-view';
 
 const createDoneGroupTemplate = () => (`
   <article class="taskboard__group taskboard__group--done">
@@ -6,18 +6,8 @@ const createDoneGroupTemplate = () => (`
   </article>
 `);
 
-export default class DoneGroupView {
-  #element = null;
-
+export default class DoneGroupView extends AbstractView {
   get template() {
     return createDoneGroupTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }

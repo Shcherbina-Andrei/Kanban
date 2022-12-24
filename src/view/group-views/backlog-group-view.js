@@ -1,4 +1,4 @@
-import {createElement} from '../../render';
+import AbstractView from '../../framework/view/abstract-view';
 
 const createBacklogGroupTemplate = () => (`
   <article class="taskboard__group taskboard__group--backlog">
@@ -6,18 +6,8 @@ const createBacklogGroupTemplate = () => (`
   </article>
 `);
 
-export default class BacklogGroupView {
-  #element = null;
-
+export default class BacklogGroupView extends AbstractView {
   get template() {
     return createBacklogGroupTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }

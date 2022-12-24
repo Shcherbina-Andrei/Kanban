@@ -3,7 +3,7 @@ import {filterTasks} from '../utils/filter';
 import {TASK_STATUS} from '../const';
 
 export default class TasksModel {
-  #tasks = Array.from({length: 12}, createTask);
+  #tasks = Array.from({length: 16}, createTask);
 
   get tasks() {
     return this.#tasks;

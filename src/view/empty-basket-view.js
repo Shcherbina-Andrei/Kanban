@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 const createEmptyBasketTemplate = () => (`
   <div class="task--empty task task--empty-trash">
@@ -6,18 +6,8 @@ const createEmptyBasketTemplate = () => (`
   </div>
 `);
 
-export default class EmptyBasketView {
-  #element = null;
-
+export default class EmptyBasketView extends AbstractView {
   get template() {
     return createEmptyBasketTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }

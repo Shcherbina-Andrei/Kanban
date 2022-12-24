@@ -1,4 +1,4 @@
-import {createElement} from '../../render';
+import AbstractView from '../../framework/view/abstract-view';
 
 const createProcessingGroupTemplate = () => (`
   <article class="taskboard__group taskboard__group--processing">
@@ -6,18 +6,8 @@ const createProcessingGroupTemplate = () => (`
   </article>
 `);
 
-export default class ProcessingGroupView {
-  #element = null;
-
+export default class ProcessingGroupView extends AbstractView {
   get template() {
     return createProcessingGroupTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 }

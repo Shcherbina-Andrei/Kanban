@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from '../framework/view/abstract-view';
 
 const createClearButtonTemplate = (isDisabled) => (`
   <button class="taskboard__button button button--clear" type="button" ${isDisabled ? 'disabled' : ''}>
@@ -12,11 +12,11 @@ const createClearButtonTemplate = (isDisabled) => (`
   </button>
 `);
 
-export default class ClearButtonView {
-  #element = null;
+export default class ClearButtonView extends AbstractView {
   #isDisabled = null;
 
   constructor(isDisabled) {
+    super();
     this.#isDisabled = isDisabled;
   }
 
@@ -24,11 +24,13 @@ export default class ClearButtonView {
     return createClearButtonTemplate(this.#isDisabled);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setClearBoardClickHandler = (callback) => {
+    this._callback.clearBoard = callback;
+    this.element.addEventListener('click', this.#clearBoardClickHandler);
+  };
 
-    return this.#element;
-  }
+  #clearBoardClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.clearBoard();
+  };
 }
