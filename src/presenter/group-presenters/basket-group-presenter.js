@@ -2,96 +2,50 @@ import BasketGroupView from '../../view/group-views/basket-group-view';
 import TaskBoardList from '../../view/task-board-list';
 import ClearButtonView from '../../view/clear-button-views';
 import EmptyBasketView from '../../view/empty-basket-view';
-import TaskPresenter from '../task-presenter';
 import {render} from '../../framework/render';
-import {TASK_STATUS} from '../../const';
-import {updateItem} from '../../utils/common';
+import {TASK_STATUS, UpdateType, UserAction} from '../../const';
+import AbstractGroupPresenter from './abstract-group-presenter';
 
-export default class BasketGroupPresenter {
-  #container = null;
-  #tasks = null;
-
-  #taskPresenters = new Map();
-
-  #handleModeChange = null;
-
-  #basketGroupComponent = new BasketGroupView();
-  #taskBoardListComponent = new TaskBoardList(TASK_STATUS.Basket);
-
+export default class BasketGroupPresenter extends AbstractGroupPresenter {
   #clearButtonComponent = null;
-
-  #emptyBasketComponent = new EmptyBasketView();
   #isDisabled = false;
 
-  constructor(container, changeMode) {
-    this.#container = container;
-    this.#handleModeChange = changeMode;
+  constructor(container, changeMode, changeData, changePosition) {
+    super();
+    this._container = container;
+    this._handleModeChange = changeMode;
+    this._handleChangeData = changeData;
+    this._handleChangePosition = changePosition;
+    this._taskBoardListComponent = new TaskBoardList(TASK_STATUS.Basket);
+    this._groupComponent = new BasketGroupView();
+    this._emptyComponent = new EmptyBasketView();
   }
 
-  init = (tasks) => {
-    this.#tasks = tasks;
-    this.#renderTasksGroup();
-  };
-
-  resetGroupView = () => {
-    this.#taskPresenters.forEach((presenter) => presenter.resetView());
-  };
-
-  #handleTaskChange = (updatedTask) => {
-    this.#tasks = updateItem(this.#tasks, updatedTask);
-    this.#taskPresenters.get(updatedTask.id).init(updatedTask);
-  };
-
-  #handleTaskMove = (activeTaskId, nextTaskId, newType) => {
-    console.log(newType);
-    const activeTask = this.#tasks.find((task) => activeTaskId === task.id);
-    const activeTaskIndex = this.#tasks.findIndex((task) => activeTask.id === task.id);
-    this.#tasks = [...this.#tasks.slice(0, activeTaskIndex), ...this.#tasks.slice(activeTaskIndex + 1)];
-    if(!nextTaskId) {
-      this.#tasks = [...this.#tasks, activeTask];
-      return;
-    }
-    const nextTaskIndex = this.#tasks.findIndex((task) => nextTaskId === task.id);
-    this.#tasks = [...this.#tasks.slice(0, nextTaskIndex), activeTask, ...this.#tasks.slice(nextTaskIndex)];
-  };
-
-  #renderTask = (task) => {
-    const taskPresenter = new TaskPresenter(this.#taskBoardListComponent.element, this.#handleTaskChange, this.#handleModeChange, this.#handleTaskMove);
-    taskPresenter.init(task);
-    this.#taskPresenters.set(task.id, taskPresenter);
-  };
-
-  #renderTasks = () => (
-    this.#tasks.forEach((task) => this.#renderTask(task))
-  );
-
-  #clearBasketHandler = () => {
-    this.#taskPresenters.forEach((taskPresenter) => taskPresenter.destroy());
-    this.#taskPresenters.clear();
+  _clearBasketHandler = () => {
+    this._taskPresenters.forEach((taskPresenter) => taskPresenter.destroy());
+    this._taskPresenters.clear();
     this.#isDisabled = true;
+    this._handleChangeData(UserAction.DELETE_TASK, UpdateType.MINOR, this._tasks);
   };
 
-  #renderClearButton = () => {
+  _renderClearButton = () => {
     this.#clearButtonComponent = new ClearButtonView(this.#isDisabled);
-    this.#clearButtonComponent.setClearBoardClickHandler(this.#clearBasketHandler);
-    render(this.#clearButtonComponent, this.#basketGroupComponent.element);
+    this.#clearButtonComponent.setClearBoardClickHandler(this._clearBasketHandler);
+    render(this.#clearButtonComponent, this._groupComponent.element);
   };
 
-  #renderNoTasks = () => {
-    render(this.#emptyBasketComponent, this.#taskBoardListComponent.element);
-  };
+  _renderTasksGroup = () => {
+    render(this._groupComponent, this._container);
+    render(this._taskBoardListComponent, this._groupComponent.element);
 
-  #renderTasksGroup = () => {
-    render(this.#basketGroupComponent, this.#container);
-    render(this.#taskBoardListComponent, this.#basketGroupComponent.element);
-
-    if (this.#tasks.length === 0) {
-      this.#renderNoTasks();
+    if (this._tasks.length === 0) {
+      this._renderNoTasks();
       this.#isDisabled = true;
     } else {
-      this.#renderTasks();
+      this._renderTasks();
+      this.#isDisabled = false;
     }
 
-    this.#renderClearButton();
+    this._renderClearButton();
   };
 }

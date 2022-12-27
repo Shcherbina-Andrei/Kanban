@@ -24,4 +24,20 @@ export default class NewTaskView extends AbstractStatefulView {
   get template() {
     return createNewTaskTemplate();
   }
+
+  setAddTaskHandler = (callback) => {
+    this._callback.addTask = callback;
+    this.element.querySelector('.add-task__form').addEventListener('submit', this.#addTaskHandler);
+  };
+
+  #clearFormField = () => {
+    document.querySelector('#add-task').value = '';
+  };
+
+  #addTaskHandler = (evt) => {
+    evt.preventDefault();
+    const newTaskDescription = document.querySelector('#add-task').value;
+    this._callback.addTask(newTaskDescription);
+    this.#clearFormField();
+  };
 }

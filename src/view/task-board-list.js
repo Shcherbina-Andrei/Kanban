@@ -33,4 +33,24 @@ export default class TaskBoardList extends AbstractView {
   get template() {
     return createTaskBoardListTemplate(this.#type);
   }
+
+  setDragOverMoveHandler = () => {
+    this.element.addEventListener('dragover', (evt) => {
+      evt.preventDefault();
+      const activeElement = document.querySelector('.task--dragged');
+      let parentElement = activeElement.parentElement;
+      const currentElement = evt.target;
+      const isMoveable = activeElement !== currentElement && currentElement.classList.contains('task');
+
+      if (!isMoveable) {
+        return;
+      }
+
+      if (currentElement.parentElement !== parentElement) {
+        parentElement = currentElement.parentElement;
+      }
+      const nextElement = (currentElement === activeElement.nextElementSibling) ? currentElement.nextElementSibling : currentElement;
+      parentElement.insertBefore(activeElement, nextElement);
+    });
+  };
 }

@@ -7,6 +7,7 @@ const createEmptyBasketTemplate = () => (`
 `);
 
 export default class EmptyBasketView extends AbstractView {
+
   get template() {
     return createEmptyBasketTemplate();
   }
