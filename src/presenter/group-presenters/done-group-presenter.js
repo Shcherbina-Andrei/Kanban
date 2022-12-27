@@ -1,83 +1,19 @@
 import DoneGroupView from '../../view/group-views/done-group-view';
-import TaskPresenter from '../task-presenter';
 import TaskBoardList from '../../view/task-board-list';
 import EmptyGroupView from '../../view/empty-group-view';
-import {render} from '../../framework/render';
 import {TASK_STATUS} from '../../const';
-import {updateItem} from '../../utils/common';
+import AbstractGroupPresenter from './abstract-group-presenter';
 
-export default class DoneGroupPresenter {
-  #container = null;
-  #tasks = null;
+export default class DoneGroupPresenter extends AbstractGroupPresenter {
 
-  #taskPresenters = new Map();
-
-  #handleModeChange = null;
-
-  #doneGroupComponent = new DoneGroupView();
-  #taskBoardListComponent = new TaskBoardList(TASK_STATUS.Done);
-  #emptyGroupComponent = new EmptyGroupView();
-
-  constructor(container, changeMode) {
-    this.#container = container;
-    this.#handleModeChange = changeMode;
+  constructor(container, changeMode, changeData, changePosition) {
+    super();
+    this._container = container;
+    this._handleModeChange = changeMode;
+    this._handleChangeData = changeData;
+    this._handleChangePosition = changePosition;
+    this._taskBoardListComponent = new TaskBoardList(TASK_STATUS.Done);
+    this._groupComponent = new DoneGroupView();
+    this._emptyComponent = new EmptyGroupView();
   }
-
-  init = (tasks) => {
-    this.#tasks = tasks;
-    this.#renderTasksGroup();
-  };
-
-  resetGroupView = () => {
-    this.#taskPresenters.forEach((presenter) => presenter.resetView());
-  };
-
-  #handleTaskChange = (updatedTask) => {
-    this.#tasks = updateItem(this.#tasks, updatedTask);
-    this.#taskPresenters.get(updatedTask.id).init(updatedTask);
-  };
-
-  #handleTaskMove = (activeTaskId, nextTaskId, newType) => {
-    console.log(newType);
-    const activeTask = this.#tasks.find((task) => activeTaskId === task.id);
-    const activeTaskIndex = this.#tasks.findIndex((task) => activeTask.id === task.id);
-    this.#tasks = [...this.#tasks.slice(0, activeTaskIndex), ...this.#tasks.slice(activeTaskIndex + 1)];
-    if(!nextTaskId) {
-      this.#tasks = [...this.#tasks, activeTask];
-      return;
-    }
-    const nextTaskIndex = this.#tasks.findIndex((task) => nextTaskId === task.id);
-    this.#tasks = [...this.#tasks.slice(0, nextTaskIndex), activeTask, ...this.#tasks.slice(nextTaskIndex)];
-  };
-
-  #renderTask = (task) => {
-    const taskPresenter = new TaskPresenter(this.#taskBoardListComponent.element, this.#handleTaskChange, this.#handleModeChange, this.#handleTaskMove);
-    taskPresenter.init(task);
-    this.#taskPresenters.set(task.id, taskPresenter);
-  };
-
-  #renderTasks = () => (
-    this.#tasks.forEach((task) => this.#renderTask(task))
-  );
-
-  #renderNoTasks = () => {
-    render(this.#emptyGroupComponent, this.#taskBoardListComponent.element);
-  };
-
-  #clearGroupHandler = () => {
-    this.#taskPresenters.forEach((taskPresenter) => taskPresenter.destroy());
-    this.#taskPresenters.clear();
-  };
-
-  #renderTasksGroup = () => {
-    render(this.#doneGroupComponent, this.#container);
-    render(this.#taskBoardListComponent, this.#doneGroupComponent.element);
-
-    if (this.#tasks.length === 0) {
-      this.#renderNoTasks();
-      return;
-    }
-
-    this.#renderTasks();
-  };
 }

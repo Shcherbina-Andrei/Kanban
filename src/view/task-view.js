@@ -28,52 +28,35 @@ const createTaskTemplate = (task) => {
 `);};
 
 export default class TaskView extends AbstractStatefulView {
-  #task = null;
 
   constructor(task) {
     super();
-    this.#task = task;
+    this._state = this.parseTaskToState(task);
   }
 
   get template() {
-    return createTaskTemplate(this.#task);
+    return createTaskTemplate(this._state);
   }
 
   setDragStartMoveHandler = () => {
     this.element.addEventListener('dragstart', (evt) => {
-      evt.target.classList.add('task--dragged');
+      const currentElement = evt.target;
+      currentElement.classList.add('task--dragged');
     });
   };
 
   setDragEndMoveHandler = (callback) => {
-    this.element.addEventListener('dragend', (evt) => {
-      const activeElement = document.querySelector('.task--dragged');
-      const activeElementId = activeElement.dataset.id;
-      const nextElementId = activeElement.nextElementSibling ? activeElement.nextElementSibling.dataset.id : 0;
-      const type = activeElement.parentElement.dataset.type;
-      callback(activeElementId, nextElementId, type);
-      evt.target.classList.remove('task--dragged');
-    });
+    this._callback.moveTask = callback;
+    this.element.addEventListener('dragend', this.#dragMoveEndHandler);
   };
 
-  setDragOverMoveHandler = () => {
-    this.element.addEventListener('dragover', (evt) => {
-      evt.preventDefault();
-      const activeElement = document.querySelector('.task--dragged');
-      let parentElement = activeElement.parentElement;
-      const currentElement = evt.target;
-      const isMoveable = activeElement !== currentElement && currentElement.classList.contains('task');
-
-      if (!isMoveable) {
-        return;
-      }
-
-      if (currentElement.parentElement !== parentElement) {
-        parentElement = currentElement.parentElement;
-      }
-      const nextElement = (currentElement === activeElement.nextElementSibling) ? currentElement.nextElementSibling : currentElement;
-      parentElement.insertBefore(activeElement, nextElement);
-    });
+  #dragMoveEndHandler = (evt) => {
+    const activeElement = document.querySelector('.task--dragged');
+    const activeElementId = activeElement.dataset.id;
+    const nextElementId = activeElement.nextElementSibling ? activeElement.nextElementSibling.dataset.id : 0;
+    const type = activeElement.parentElement.dataset.type;
+    this._callback.moveTask(activeElementId, nextElementId, type);
+    evt.target.classList.remove('task--dragged');
   };
 
   setEditTaskClickHandler = (callback) => {
@@ -92,9 +75,31 @@ export default class TaskView extends AbstractStatefulView {
   };
 
   #saveEditingTaskHandler = (evt) => {
+    const inputValue = this.element.querySelector('.task__input').value;
     if (evt.code === 'Enter') {
-      const description = this.element.querySelector('.task__input').value;
-      this._callback.saveTask(description);
+      if (inputValue.length < 3) {
+        return;
+      }
+      this._state.description = inputValue;
+      this._callback.saveTask(this.parseTaskToState(this._state));
     }
+  };
+
+  parseTaskToState = (task) => ({...task});
+
+  parseStateToTask = (state) => ({...state});
+
+  reset = (task) => {
+    this.updateElement(
+      this.parseStateToTask(task)
+    );
+  };
+
+  _restoreHandlers = () => {
+    this.setEditTaskClickHandler(this._callback.editClick);
+    this.setSaveEditingTaskHandler(this._callback.saveTask);
+    this.setDragStartMoveHandler();
+    this.setDragOverMoveHandler();
+    this.setDragEndMoveHandler(this._callback.moveTask);
   };
 }

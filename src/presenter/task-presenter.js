@@ -14,15 +14,13 @@ export default class TaskPresenter {
   #taskComponent = null;
   #changeData = null;
   #changeMode = null;
-
-  #moveTaskHandler = null;
-
+  #moveTask = null;
 
   constructor(container, changeData, changeMode, moveTask) {
     this.#container = container;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
-    this.#moveTaskHandler = moveTask;
+    this.#moveTask = moveTask;
   }
 
   init = (task) => {
@@ -35,8 +33,7 @@ export default class TaskPresenter {
     this.#taskComponent.setEditTaskClickHandler(this.#editTaskHandler);
     this.#taskComponent.setSaveEditingTaskHandler(this.#saveEditTaskHandler);
     this.#taskComponent.setDragStartMoveHandler();
-    this.#taskComponent.setDragEndMoveHandler(this.#moveTaskHandler);
-    this.#taskComponent.setDragOverMoveHandler();
+    this.#taskComponent.setDragEndMoveHandler(this.#moveTask);
     window.addEventListener('keydown', this.#closeTaskHandler);
 
     if (prevTaskComponent === null) {
@@ -62,8 +59,8 @@ export default class TaskPresenter {
     }
   };
 
-  #saveEditTaskHandler = (description) => {
-    this.#changeData({...this.#task, description});
+  #saveEditTaskHandler = (task) => {
+    this.#changeData(task);
     this.#replaceTaskToDefault();
   };
 
@@ -79,6 +76,7 @@ export default class TaskPresenter {
 
   #closeTaskHandler = (evt) => {
     if (evt.code === 'Escape') {
+      this.#taskComponent.reset(this.#task);
       this.#replaceTaskToDefault();
     }
   };
