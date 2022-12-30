@@ -12,10 +12,4 @@ const UserAction = {
   CHANGE_POSITION: 'CHANGE_POSITION'
 };
 
-const UpdateType = {
-  PATCH: 'PATCH',
-  MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
-};
-
-export {TASK_STATUS, UserAction, UpdateType};
+export {TASK_STATUS, UserAction};

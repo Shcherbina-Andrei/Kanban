@@ -1,5 +1,5 @@
 import TaskBoardView from '../view/task-board-view';
-import {render} from '../framework/render';
+import {remove, render, RenderPosition} from '../framework/render';
 import NewTaskPresenter from './new-task-presenter';
 import BacklogGroupPresenter from './group-presenters/backlog-group-presenter';
 import ProcessingGroupPresenter from './group-presenters/processing-group-presenter';
@@ -7,17 +7,21 @@ import DoneGroupPresenter from './group-presenters/done-group-presenter';
 import BasketGroupPresenter from './group-presenters/basket-group-presenter';
 import {filterTasks} from '../utils/filter';
 import {TASK_STATUS, UserAction} from '../const';
+import LoaderView from '../view/loader-view';
 
 export default class TaskBoardPresenter {
   #container = null;
   #tasksModel = null;
 
   #taskBoardComponent = new TaskBoardView();
+  #loadingComponent = new LoaderView();
   #newTaskPresenter = null;
   #backlogGroupPresenter = null;
   #processingGroupPresenter = null;
   #doneGroupPresenter = null;
   #basketGroupPresenter = null;
+
+  #isLoading = true;
 
   constructor(container, tasksModel) {
     this.#container = container;
@@ -75,19 +79,29 @@ export default class TaskBoardPresenter {
 
 
   #handleModelEvent = () => {
+    this.#isLoading = false;
     this.#clearBoard();
     this.#renderBoard();
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#taskBoardComponent.element, RenderPosition.AFTERBEGIN);
+  };
+
   #renderBoard = () => {
+    render(this.#taskBoardComponent, this.#container);
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     this.#backlogGroupPresenter.init(filterTasks[TASK_STATUS.Backlog](this.tasks));
     this.#processingGroupPresenter.init(filterTasks[TASK_STATUS.Processing](this.tasks));
     this.#doneGroupPresenter.init(filterTasks[TASK_STATUS.Done](this.tasks));
     this.#basketGroupPresenter.init(filterTasks[TASK_STATUS.Basket](this.tasks));
-    render(this.#taskBoardComponent, this.#container);
   };
 
   #clearBoard = () => {
+    remove(this.#loadingComponent);
     this.#backlogGroupPresenter.destroy();
     this.#processingGroupPresenter.destroy();
     this.#doneGroupPresenter.destroy();

@@ -3,7 +3,7 @@ import TaskBoardList from '../../view/task-board-list';
 import ClearButtonView from '../../view/clear-button-views';
 import EmptyBasketView from '../../view/empty-basket-view';
 import {render} from '../../framework/render';
-import {TASK_STATUS, UpdateType, UserAction} from '../../const';
+import {TASK_STATUS, UserAction} from '../../const';
 import AbstractGroupPresenter from './abstract-group-presenter';
 
 export default class BasketGroupPresenter extends AbstractGroupPresenter {
@@ -25,7 +25,7 @@ export default class BasketGroupPresenter extends AbstractGroupPresenter {
     this._taskPresenters.forEach((taskPresenter) => taskPresenter.destroy());
     this._taskPresenters.clear();
     this.#isDisabled = true;
-    this._handleChangeData(UserAction.DELETE_TASK, UpdateType.MINOR, this._tasks);
+    this._handleChangeData(UserAction.DELETE_TASK, this._tasks);
   };
 
   _renderClearButton = () => {

@@ -40,7 +40,7 @@ export default class TaskBoardList extends AbstractView {
       const activeElement = document.querySelector('.task--dragged');
       let parentElement = activeElement.parentElement;
       const currentElement = evt.target;
-      const isMoveable = activeElement !== currentElement && currentElement.classList.contains('task');
+      const isMoveable = currentElement.classList.contains('task');
 
       if (!isMoveable) {
         return;
