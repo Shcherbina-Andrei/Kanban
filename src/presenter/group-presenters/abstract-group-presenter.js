@@ -1,5 +1,4 @@
 import TaskPresenter from '../task-presenter';
-import {updateItem} from '../../utils/common';
 import {render, remove} from '../../framework/render';
 
 export default class AbstractGroupPresenter {
@@ -26,13 +25,8 @@ export default class AbstractGroupPresenter {
     this._taskPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  _handleTaskChange = (updatedTask) => {
-    this._tasks = updateItem(this._tasks, updatedTask);
-    this._taskPresenters.get(updatedTask.id).init(updatedTask);
-  };
-
   _renderTask = (task) => {
-    const taskPresenter = new TaskPresenter(this._taskBoardListComponent.element, this._handleTaskChange, this._handleModeChange, this._handleChangePosition);
+    const taskPresenter = new TaskPresenter(this._taskBoardListComponent.element, this._handleChangeData, this._handleModeChange, this._handleChangePosition);
     taskPresenter.init(task);
     this._taskPresenters.set(task.id, taskPresenter);
   };

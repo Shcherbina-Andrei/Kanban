@@ -41,7 +41,9 @@ export default class TaskView extends AbstractStatefulView {
   setDragStartMoveHandler = () => {
     this.element.addEventListener('dragstart', (evt) => {
       const currentElement = evt.target;
-      currentElement.classList.add('task--dragged');
+      if (currentElement.classList.contains('task')) {
+        currentElement.classList.add('task--dragged');
+      }
     });
   };
 
@@ -54,9 +56,11 @@ export default class TaskView extends AbstractStatefulView {
     const activeElement = document.querySelector('.task--dragged');
     const activeElementId = activeElement.dataset.id;
     const nextElementId = activeElement.nextElementSibling ? activeElement.nextElementSibling.dataset.id : 0;
-    const type = activeElement.parentElement.dataset.type;
-    this._callback.moveTask(activeElementId, nextElementId, type);
-    evt.target.classList.remove('task--dragged');
+    if (activeElement.parentElement.classList.contains('taskboard__list')) {
+      const type = activeElement.parentElement.dataset.type;
+      this._callback.moveTask(activeElementId, nextElementId, type);
+      evt.target.classList.remove('task--dragged');
+    }
   };
 
   setEditTaskClickHandler = (callback) => {
@@ -66,6 +70,7 @@ export default class TaskView extends AbstractStatefulView {
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
+    this.element.draggable = false;
     this._callback.editClick();
   };
 
@@ -81,6 +86,7 @@ export default class TaskView extends AbstractStatefulView {
         return;
       }
       this._state.description = inputValue;
+      this.element.draggable = true;
       this._callback.saveTask(this.parseTaskToState(this._state));
     }
   };
@@ -99,7 +105,6 @@ export default class TaskView extends AbstractStatefulView {
     this.setEditTaskClickHandler(this._callback.editClick);
     this.setSaveEditingTaskHandler(this._callback.saveTask);
     this.setDragStartMoveHandler();
-    this.setDragOverMoveHandler();
     this.setDragEndMoveHandler(this._callback.moveTask);
   };
 }

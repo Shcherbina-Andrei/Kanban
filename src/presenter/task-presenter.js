@@ -1,5 +1,6 @@
 import TaskView from '../view/task-view';
 import {remove, render, replace} from '../framework/render';
+import {UserAction} from '../const';
 
 const Mode = {
   DEFAULT: 'default',
@@ -60,8 +61,8 @@ export default class TaskPresenter {
   };
 
   #saveEditTaskHandler = (task) => {
-    this.#changeData(task);
     this.#replaceTaskToDefault();
+    this.#changeData(UserAction.UPDATE_TASK, task);
   };
 
   resetView = () => {

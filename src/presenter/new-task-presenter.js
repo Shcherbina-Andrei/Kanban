@@ -1,7 +1,6 @@
 import NewTaskView from '../view/new-task-view';
 import {render} from '../framework/render';
-import { nanoid } from 'nanoid';
-import { TASK_STATUS, UpdateType, UserAction } from '../const';
+import {TASK_STATUS, UserAction} from '../const';
 
 export default class NewTaskPresenter {
   #container = null;
@@ -21,12 +20,11 @@ export default class NewTaskPresenter {
 
   #handleAddTask = (descriptionTask) => {
     const newTask = {
-      id: nanoid(),
       group: TASK_STATUS.Backlog,
       description: descriptionTask
     };
 
-    this.#changeData(UserAction.ADD_TASK, UpdateType.MINOR, newTask);
+    this.#changeData(UserAction.ADD_TASK, newTask);
   };
 
   #renderNewTaskPresenter = () => {
