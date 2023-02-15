@@ -21,7 +21,7 @@ export default class NewTaskPresenter {
   #handleAddTask = (descriptionTask) => {
     const newTask = {
       group: TASK_STATUS.Backlog,
-      description: descriptionTask
+      description: descriptionTask,
     };
 
     this.#changeData(UserAction.ADD_TASK, newTask);
